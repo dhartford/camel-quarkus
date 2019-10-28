@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.camel.quarkus</groupId>
         <artifactId>camel-quarkus-parent</artifactId>
-        <version>0.2.1-SNAPSHOT</version>
+        <version>0.3.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -33,7 +33,7 @@
     <name>Camel Quarkus :: Build Parent</name>
 
     <properties>
-        <camel-quarkus.version>0.2.1-SNAPSHOT</camel-quarkus.version><!-- kept in sync with project.version by the release plugin -->
+        <camel-quarkus.version>0.3.1-SNAPSHOT</camel-quarkus.version><!-- kept in sync with project.version by the release plugin -->
 
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <maven-checkstyle.version>7.6.1</maven-checkstyle.version>
@@ -78,6 +78,11 @@
                 <artifactId>camel-quarkus-support-xstream-deployment</artifactId>
                 <version>${camel-quarkus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-support-xml-deployment</artifactId>
+                <version>${camel-quarkus.version}</version>
+            </dependency>
 
             <!-- Camel Quarkus deployment modules, in alphabetical order -->
             <dependency>
@@ -112,6 +117,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-core-xml-deployment</artifactId>
+                <version>${camel-quarkus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
                 <artifactId>camel-quarkus-core-deployment</artifactId>
                 <version>${camel-quarkus.version}</version>
             </dependency>
@@ -128,6 +138,11 @@
             <dependency>
                 <groupId>org.apache.camel.quarkus</groupId>
                 <artifactId>camel-quarkus-infinispan-deployment</artifactId>
+                <version>${camel-quarkus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-jackson-deployment</artifactId>
                 <version>${camel-quarkus.version}</version>
             </dependency>
             <dependency>
@@ -202,6 +217,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-slack-deployment</artifactId>
+                <version>${camel-quarkus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
                 <artifactId>camel-quarkus-timer-deployment</artifactId>
                 <version>${camel-quarkus.version}</version>
             </dependency>
@@ -212,7 +232,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel.quarkus</groupId>
-                <artifactId>camel-quarkus-xml-common-deployment</artifactId>
+                <artifactId>camel-quarkus-vm-deployment</artifactId>
                 <version>${camel-quarkus.version}</version>
             </dependency>
             <dependency>
@@ -228,6 +248,16 @@
             <dependency>
                 <groupId>org.apache.camel.quarkus</groupId>
                 <artifactId>camel-quarkus-tarfile-deployment</artifactId>
+                <version>${camel-quarkus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-attachments-deployment</artifactId>
+                <version>${camel-quarkus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-fhir-deployment</artifactId>
                 <version>${camel-quarkus.version}</version>
             </dependency>
 

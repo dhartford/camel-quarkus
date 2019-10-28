@@ -28,7 +28,7 @@
 
     <groupId>org.apache.camel.quarkus</groupId>
     <artifactId>camel-quarkus-parent</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Camel Quarkus</name>
@@ -40,8 +40,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <camel.version>3.0.0-SNAPSHOT</camel.version>
-        <quarkus.version>0.25.0</quarkus.version>
+        <camel.version>3.0.0-RC3</camel.version>
+        <hapi.version>3.7.0</hapi.version>
+        <quarkus.version>0.26.1</quarkus.version>
         <jetty.version>9.4.18.v20190429</jetty.version>
         <xstream.version>1.4.11</xstream.version>
 
@@ -69,21 +70,21 @@
         <tagNameFormat>@{project.version}</tagNameFormat>
 
         <mvnd.builder.rules>
-            camel-quarkus-core-deployment,camel-quarkus-aws-*-deployment,camel-quarkus-log-deployment,camel-quarkus-timer-deployment -> camel-quarkus-integration-test-aws
-            camel-quarkus-core-deployment,camel-quarkus-bean-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -> camel-quarkus-integration-test-bean
-            camel-quarkus-core-deployment,camel-quarkus-direct-deployment,camel-quarkus-xml-common-deployment -> camel-quarkus-integration-test-core-cdi
-            camel-quarkus-core-deployment,camel-quarkus-core-cloud-deployment -> camel-quarkus-integration-test-core-impl
-            camel-quarkus-core-deployment,camel-quarkus-csv-deployment,camel-quarkus-direct-deployment -> camel-quarkus-integration-test-csv
-            camel-quarkus-core-deployment,camel-quarkus-infinispan-deployment,camel-quarkus-log-deployment,camel-quarkus-netty-http-deployment -> camel-quarkus-integration-test-infinispan
-            camel-quarkus-core-deployment,camel-quarkus-jdbc-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -> camel-quarkus-integration-test-jdbc
-            camel-quarkus-core-deployment,camel-quarkus-mail-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -> camel-quarkus-integration-test-mail
-            camel-quarkus-core-deployment,camel-quarkus-microprofile-metrics-deployment,camel-quarkus-direct-deployment -> camel-quarkus-integration-test-microprofile-metrics
-            camel-quarkus-core-deployment,camel-quarkus-netty-http-deployment,camel-quarkus-core-deployment -> camel-quarkus-integration-test-netty-http
-            camel-quarkus-core-deployment,camel-quarkus-paho-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -> camel-quarkus-integration-test-paho
-            camel-quarkus-core-deployment,camel-quarkus-salesforce-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -> camel-quarkus-integration-test-salesforce
-            camel-quarkus-core-deployment,camel-quarkus-servlet-deployment,camel-quarkus-rest-deployment,camel-quarkus-core-cloud-deployment -> camel-quarkus-integration-test-servlet
-            camel-quarkus-core-deployment,camel-quarkus-twitter-deployment,camel-quarkus-log-deployment -> camel-quarkus-integration-test-twitter
-            camel-quarkus-core-deployment,camel-quarkus-zipfile-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -> camel-quarkus-integration-test-zipfile
+            camel-quarkus-core-deployment,camel-quarkus-aws-*-deployment,camel-quarkus-log-deployment,camel-quarkus-timer-deployment -&gt; camel-quarkus-integration-test-aws
+            camel-quarkus-core-deployment,camel-quarkus-bean-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -&gt; camel-quarkus-integration-test-bean
+            camel-quarkus-core-deployment,camel-quarkus-direct-deployment,camel-quarkus-core-xml-deployment -&gt; camel-quarkus-integration-test-core-cdi
+            camel-quarkus-core-deployment,camel-quarkus-core-cloud-deployment -&gt; camel-quarkus-integration-test-core-impl
+            camel-quarkus-core-deployment,camel-quarkus-csv-deployment,camel-quarkus-direct-deployment -&gt; camel-quarkus-integration-test-csv
+            camel-quarkus-core-deployment,camel-quarkus-infinispan-deployment,camel-quarkus-log-deployment,camel-quarkus-netty-http-deployment -&gt; camel-quarkus-integration-test-infinispan
+            camel-quarkus-core-deployment,camel-quarkus-jdbc-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -&gt; camel-quarkus-integration-test-jdbc
+            camel-quarkus-core-deployment,camel-quarkus-mail-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -&gt; camel-quarkus-integration-test-mail
+            camel-quarkus-core-deployment,camel-quarkus-microprofile-metrics-deployment,camel-quarkus-direct-deployment -&gt; camel-quarkus-integration-test-microprofile-metrics
+            camel-quarkus-core-deployment,camel-quarkus-netty-http-deployment,camel-quarkus-core-deployment -&gt; camel-quarkus-integration-test-netty-http
+            camel-quarkus-core-deployment,camel-quarkus-paho-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -&gt; camel-quarkus-integration-test-paho
+            camel-quarkus-core-deployment,camel-quarkus-salesforce-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -&gt; camel-quarkus-integration-test-salesforce
+            camel-quarkus-core-deployment,camel-quarkus-servlet-deployment,camel-quarkus-rest-deployment,camel-quarkus-core-cloud-deployment -&gt; camel-quarkus-integration-test-servlet
+            camel-quarkus-core-deployment,camel-quarkus-twitter-deployment,camel-quarkus-log-deployment -&gt; camel-quarkus-integration-test-twitter
+            camel-quarkus-core-deployment,camel-quarkus-zipfile-deployment,camel-quarkus-direct-deployment,camel-quarkus-log-deployment -&gt; camel-quarkus-integration-test-zipfile
         </mvnd.builder.rules>
     </properties>
 
@@ -242,6 +243,12 @@
                     <groupId>io.quarkus</groupId>
                     <artifactId>quarkus-maven-plugin</artifactId>
                     <version>${quarkus.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>groovy-maven-plugin</artifactId>
+                    <version>${groovy-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -429,6 +436,16 @@
         </profile>
 
         <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
+
+        <profile>
             <id>quarkus-snapshots</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -457,6 +474,19 @@
                     </snapshots>
                 </pluginRepository>
             </pluginRepositories>
+        </profile>
+
+        <profile>
+            <id>quarkus-docker</id>
+            <activation>
+                <property>
+                    <name>docker</name>
+                </property>
+            </activation>
+            <properties>
+                <native-image.docker-build>true</native-image.docker-build>
+                <native-image.container-runtime>docker</native-image.container-runtime>
+            </properties>
         </profile>
     </profiles>
 

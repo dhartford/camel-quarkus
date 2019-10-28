@@ -35,13 +35,14 @@ import io.quarkus.deployment.recording.RecorderContext;
 import io.quarkus.runtime.RuntimeValue;
 import org.apache.camel.CamelContext;
 import org.apache.camel.RoutesBuilder;
-import org.apache.camel.quarkus.core.CamelConfig;
 import org.apache.camel.quarkus.core.CamelMain;
 import org.apache.camel.quarkus.core.CamelMainProducers;
 import org.apache.camel.quarkus.core.CamelMainRecorder;
 import org.apache.camel.quarkus.core.CamelProducers;
 import org.apache.camel.quarkus.core.CamelRecorder;
+import org.apache.camel.quarkus.core.CoreAttachmentsRecorder;
 import org.apache.camel.quarkus.core.Flags;
+import org.apache.camel.quarkus.core.UploadAttacher;
 import org.apache.camel.spi.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +60,24 @@ class BuildProcessor {
             beanProducer.produce(AdditionalBeanBuildItem.unremovableOf(CamelProducers.class));
         }
 
+        /*
+         * Configure filters for core services.
+         */
+        @BuildStep
+        void coreServiceFilter(BuildProducer<CamelServiceFilterBuildItem> filterBuildItems) {
+            filterBuildItems.produce(
+                new CamelServiceFilterBuildItem(si -> si.path.endsWith("META-INF/services/org/apache/camel/properties-component-factory"))
+             );
+        }
+
         @Record(ExecutionTime.STATIC_INIT)
         @BuildStep
         CamelRegistryBuildItem registry(
             CamelRecorder recorder,
             RecorderContext recorderContext,
             ApplicationArchivesBuildItem applicationArchives,
-            List<CamelBeanBuildItem> registryItems) {
+            List<CamelBeanBuildItem> registryItems,
+            List<CamelServiceFilterBuildItem> serviceFilters) {
 
             RuntimeValue<Registry> registry = recorder.createRegistry();
 
@@ -77,7 +89,7 @@ class BuildProcessor {
                     // to the camel context directly by extension so it does not make sense to
                     // instantiate them in this phase.
                     //
-                    boolean blacklisted = si.path.endsWith("reactive-executor") || si.path.endsWith("platform-http");
+                    boolean blacklisted = serviceFilters.stream().anyMatch(filter -> filter.getPredicate().test(si));
                     if (blacklisted) {
                         LOGGER.debug("Ignore service: {}", si);
                     }
@@ -137,15 +149,13 @@ class BuildProcessor {
             CamelRegistryBuildItem registry,
             CamelModelJAXBContextFactoryBuildItem contextFactory,
             CamelXmlLoaderBuildItem xmlLoader,
-            BeanContainerBuildItem beanContainer,
-            CamelConfig.BuildTime buildTimeConfig) {
+            BeanContainerBuildItem beanContainer) {
 
             RuntimeValue<CamelContext> context = recorder.createContext(
                 registry.getRegistry(),
                 contextFactory.getContextFactory(),
                 xmlLoader.getXmlLoader(),
-                beanContainer.getValue(),
-                buildTimeConfig);
+                beanContainer.getValue());
 
             return new CamelContextBuildItem(context);
         }
@@ -184,7 +194,7 @@ class BuildProcessor {
                 CombinedIndexBuildItem combinedIndex,
                 CamelMainRecorder recorder,
                 RecorderContext recorderContext) {
-            
+
             return CamelSupport.getRouteBuilderClasses(combinedIndex.getIndex())
                 .map(recorderContext::<RoutesBuilder>newInstance)
                 .map(CamelRoutesBuilderBuildItem::new)
@@ -198,14 +208,14 @@ class BuildProcessor {
             return new CamelRoutesCollectorBuildItem(recorder.newDisabledXmlRoutesCollector());
         }
 
-        @BuildStep(onlyIfNot = Flags.MainDisabled.class)
+        @BuildStep(onlyIf = Flags.MainEnabled.class)
         void beans(BuildProducer<AdditionalBeanBuildItem> beanProducer) {
             beanProducer.produce(AdditionalBeanBuildItem.unremovableOf(CamelMainProducers.class));
         }
 
         @Overridable
         @Record(value = ExecutionTime.RUNTIME_INIT, optional = true)
-        @BuildStep(onlyIfNot = Flags.MainDisabled.class)
+        @BuildStep(onlyIf = Flags.MainEnabled.class)
         CamelReactiveExecutorBuildItem reactiveExecutor(CamelMainRecorder recorder) {
             return new CamelReactiveExecutorBuildItem(recorder.createReactiveExecutor());
         }
@@ -218,7 +228,7 @@ class BuildProcessor {
          * at runtime.
          */
         @Record(ExecutionTime.STATIC_INIT)
-        @BuildStep(onlyIfNot = Flags.MainDisabled.class)
+        @BuildStep(onlyIf = Flags.MainEnabled.class)
         CamelMainBuildItem main(
             CamelMainRecorder recorder,
             CamelContextBuildItem context,
@@ -259,7 +269,7 @@ class BuildProcessor {
          *                  container thus we need it to be fully initialized to avoid unexpected behaviors.
          */
         @Record(ExecutionTime.RUNTIME_INIT)
-        @BuildStep(onlyIfNot = Flags.MainDisabled.class)
+        @BuildStep(onlyIf = Flags.MainEnabled.class)
         void start(
             CamelMainRecorder recorder,
             CamelMainBuildItem main,
@@ -271,5 +281,28 @@ class BuildProcessor {
             recorder.setReactiveExecutor(main.getInstance(), executor.getInstance());
             recorder.start(shutdown, main.getInstance());
         }
+    }
+
+    /**
+     * Build steps related to Camel Attachments.
+     */
+    public static class Attachments {
+
+        /**
+         * Produces an {@link UploadAttacherBuildItem} holding a no-op {@link UploadAttacher}.
+         * <p>
+         * Note that this {@link BuildStep} is effective only if {@code camel-quarkus-attachments} extension is not in
+         * the class path.
+         *
+         * @param recorder the {@link CoreAttachmentsRecorder}
+         * @return a new {@link UploadAttacherBuildItem}
+         */
+        @Overridable
+        @Record(value = ExecutionTime.STATIC_INIT, optional = true)
+        @BuildStep
+        UploadAttacherBuildItem uploadAttacher(CoreAttachmentsRecorder recorder) {
+            return new UploadAttacherBuildItem(recorder.createNoOpUploadAttacher());
+        }
+
     }
 }

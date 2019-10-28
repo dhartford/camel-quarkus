@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.camel.quarkus</groupId>
         <artifactId>camel-quarkus-parent</artifactId>
-        <version>0.2.1-SNAPSHOT</version>
+        <version>0.3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>camel-quarkus-extensions</artifactId>
@@ -36,9 +36,9 @@
         <module>support</module>
 
         <!-- common/shared extensions -->
-        <module>xml-common</module>
         <module>core</module>
         <module>core-cloud</module>
+        <module>core-xml</module>
         <module>http-common</module>
         <module>reactive-executor</module>
 
@@ -50,7 +50,9 @@
         <module>bean</module>
         <module>csv</module>
         <module>direct</module>
+        <module>fhir</module>
         <module>infinispan</module>
+        <module>jackson</module>
         <module>jdbc</module>
         <module>log</module>
         <module>mail</module>
@@ -63,10 +65,13 @@
         <module>rest</module>
         <module>salesforce</module>
         <module>servlet</module>
+        <module>slack</module>
         <module>tarfile</module>
         <module>timer</module>
         <module>twitter</module>
+        <module>vm</module>
         <module>zipfile</module>
+        <module>attachments</module>
     </modules>
 
     <build>
@@ -103,7 +108,7 @@
                     <templatesUriBase>file:///${project.basedir}/../build/create-extension-templates</templatesUriBase>
                     <runtimeBomPath>../poms/bom/pom.xml</runtimeBomPath>
                     <deploymentBomPath>../poms/bom-deployment/pom.xml</deploymentBomPath>
-                    <bomEntryVersion>%{camel-quarkus.version}</bomEntryVersion>
+                    <bomEntryVersion>@{camel-quarkus.version}</bomEntryVersion>
                     <itestParentPath>../integration-tests/pom.xml</itestParentPath>
                 </configuration>
             </plugin>

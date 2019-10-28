@@ -21,6 +21,7 @@ import io.restassured.RestAssured;
 import org.apache.camel.component.platform.http.PlatformHttpComponent;
 import org.apache.camel.component.platform.http.PlatformHttpConstants;
 import org.apache.camel.quarkus.component.platform.http.runtime.QuarkusPlatformHttpEngine;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -37,8 +38,7 @@ class PlatformHttpEngineTest {
                 .body(
                     PlatformHttpConstants.PLATFORM_HTTP_ENGINE_NAME, is(QuarkusPlatformHttpEngine.class.getName()),
                     PlatformHttpConstants.PLATFORM_HTTP_COMPONENT_NAME, is(PlatformHttpComponent.class.getName()),
-                    "handlers-size", is(2)
-                );
+                    "handlers-size", is(2));
     }
 
     @Test
@@ -48,5 +48,12 @@ class PlatformHttpEngineTest {
             .then()
                 .statusCode(200)
                 .body(equalTo("platform-http/hello"));
+    }
+
+    @Disabled("https://github.com/quarkusio/quarkus/issues/4408")
+    @Test
+    public void invalidMethod() {
+        RestAssured.post("/platform-http/hello")
+            .then().statusCode(405);
     }
 }
